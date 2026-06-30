@@ -1,6 +1,45 @@
-# Default-deny build context. Only what the env/wheels images need enters the context
-*
-!pyproject.toml
-!README.md
-!patches
-!jasna/protection/keytool/wheels
+# Git
+.git/
+.gitattributes
+.gitmodules
+.gitignore
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
+.venv*/
+venv/
+
+# Env
+.env
+
+# Model weights (large, should be volume-mounted)
+model_weights/
+
+# Assets (README images)
+assets/
+
+# Tests (not needed at runtime)
+tests/
+
+# Dev scripts
+debug_blend_contours.py
+evaluate_rfdetr.py
+probe_tvai_delay.py
+profile_basicvsrpp.py
+
+# CI
+.github/
+.coveragerc
+
+# Docs (other languages)
+README.ja.md
+README.zh.md
+
+# Editor temp files
+*~
+*.swp
+*.swo

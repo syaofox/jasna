@@ -1,0 +1,52 @@
+services:
+  jasna:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: jasna:latest
+    container_name: jasna
+    # Run with host user UID:GID so output files have correct ownership.
+    # Defaults to 1000:1000 if UID/GID not set.
+    # user: "${MY_UID:-1000}:${MY_GID:-1000}"   # uncomment for host-owner output files
+
+    # GPU access — requires nvidia-container-toolkit.
+    # If the deploy section doesn't work, install nvidia-container-toolkit:
+    #   sudo pacman -S nvidia-container-toolkit
+    #   sudo nvidia-ctk runtime configure --runtime=docker
+    #   sudo systemctl restart docker
+    # Then switch to: runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu, video, utility, compute]
+
+    environment:
+      # X11 forwarding (for GUI mode)
+      DISPLAY: "${DISPLAY:-:0}"
+      XAUTHORITY: "/tmp/.Xauthority"
+      QT_X11_NO_MITSHM: "1"
+      # NVIDIA GPU
+      NVIDIA_DRIVER_CAPABILITIES: "compute,video,utility,graphics"
+      NVIDIA_VISIBLE_DEVICES: "all"
+
+    volumes:
+      # X11 socket — required for GUI
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      # X authority — optional, helps with X11 permissions
+      - "${XAUTHORITY:-${HOME}/.Xauthority}:/tmp/.Xauthority:ro"
+      # Model weights + compiled TensorRT engines (persist across container rebuilds)
+      - ./model_weights:/app/model_weights
+      # Input / output directories
+      - ./input:/input
+      - ./output:/output
+
+    # Host IPC — required by PyTorch multiprocessing (shared memory)
+    ipc: host
+
+    # Interactive mode (for CLI usage)
+    stdin_open: true
+    tty: true
+
+    # Default: launch GUI. For CLI: docker compose run jasna --input /input/...
