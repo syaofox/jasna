@@ -259,3 +259,24 @@ RTX 3060 12GB 建议降低 clip size：
 ```bash
 mkdir -p input output
 ```
+
+
+### 改善效果的主要参数：
+时间一致性（减少闪烁）：
+- --max-clip-size 180 — 更大的 clip 大小，时间连续性更好（VRAM 需求更高）
+- --temporal-overlap 15 — 增加重叠帧数，clip 边界更平滑
+- --enable-crossfade（默认开启）— clip 间交叉淡化
+画质：
+- --secondary-restoration rtx-super-res — 二次放大，大幅提升细节清晰度
+- --denoise medium — 降噪，减少伪影
+- --no-fp16 — 使用 FP32 精度（VRAM 更高，但轻微改善画质）
+RTX 3060 12GB 推荐组合（效果优先）：
+docker compose run --rm jasna \
+  --input /input/video.mp4 \
+  --output /output/out.mkv \
+  --max-clip-size 180 \
+  --temporal-overlap 15 \
+  --secondary-restoration rtx-super-res \
+  --rtx-quality ultra \
+  --rtx-denoise medium
+如果 VRAM 不足（OOM），先降 --max-clip-size 到 90 或关闭 --rtx-denoise。

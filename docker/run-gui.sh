@@ -6,6 +6,9 @@ PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 
 cd "$PROJECT_DIR"
 
+export MY_UID="$(id -u)"
+export MY_GID="$(id -g)"
+
 echo "==> Allowing X11 connections from local containers"
 xhost +local:
 

@@ -7,7 +7,7 @@ services:
     container_name: jasna
     # Run with host user UID:GID so output files have correct ownership.
     # Defaults to 1000:1000 if UID/GID not set.
-    # user: "${MY_UID:-1000}:${MY_GID:-1000}"   # uncomment for host-owner output files
+    user: "${MY_UID:-1000}:${MY_GID:-1000}"
 
     # GPU access — requires nvidia-container-toolkit.
     # If the deploy section doesn't work, install nvidia-container-toolkit:
