@@ -31,8 +31,8 @@ docker compose build
 # 查看帮助
 docker compose run --rm jasna
 
-# CLI 处理单个视频
-docker compose run --rm jasna \
+# CLI 处理单个视频（输出文件属主为当前用户）
+MY_UID=$(id -u) MY_GID=$(id -g) docker compose run --rm jasna \
   --input /input/video.mp4 \
   --output /output/restored.mkv
 
