@@ -252,6 +252,43 @@ RTX 3060 12GB 建议降低 clip size：
 --no-compile-basicvsrpp
 ```
 
+## 画质调优
+
+### 恢复区域有明显边界
+
+这是 256x256 crop 恢复后 blend 回原帧时的固有效果。二次恢复（RTX Super Res）放大到 1024x1024 后与原帧差异变大，边界更明显。
+
+缓解方法：
+
+1. **关掉二次恢复**（边界最不明显，但画质较糊）：
+   ```bash
+   --secondary-restoration none
+   ```
+
+2. **降低二次放大倍数**（平衡画质与边界）：
+   ```bash
+   --rtx-scale 2
+   ```
+
+3. **启用降噪**（软化边缘）：
+   ```bash
+   --denoise high
+   ```
+
+推荐组合：
+
+```bash
+MY_UID=$(id -u) MY_GID=$(id -g) docker compose run --rm jasna \
+  --input /input/video.mp4 \
+  --output /output/out.mkv \
+  --max-clip-size 180 \
+  --temporal-overlap 15 \
+  --secondary-restoration rtx-super-res \
+  --rtx-scale 2 \
+  --rtx-quality ultra \
+  --rtx-denoise medium
+```
+
 ### 权限问题
 
 `input/` 和 `output/` 目录需要容器有写权限。使用前创建：
