@@ -252,6 +252,45 @@ RTX 3060 12GB 建议降低 clip size：
 --no-compile-basicvsrpp
 ```
 
+## 编码质量
+
+输出使用 NVENC HEVC 硬件编码，核心参数 `cq`（Constant Quality），**值越低质量越高、文件越大**。
+
+| cq 值 | 画质 | 文件大小 | 适用场景 |
+|-------|------|---------|---------|
+| 18-20 | 接近无损 | 很大 | 存档/收藏 |
+| 22-25 | 优秀 | 适中 | 默认(25) |
+| 28-30 | 可接受 | 较小 | 预览/临时 |
+| 35+ | 差 | 很小 | 不推荐 |
+
+**preset**（编码器预设，P1最快↔P7最慢）：
+
+| preset | 速度 | 同码率画质 |
+|--------|------|-----------|
+| P1-P3 | 极快 | 差 |
+| P4 | 快 | 一般 |
+| P5 | 中等 | 好（默认） |
+| P6 | 较慢 | 优秀（推荐） |
+| P7 | 最慢 | 最佳 |
+
+**示例**：
+
+```bash
+# 高质量（cq 降低 + 慢预设）
+MY_UID=$(id -u) MY_GID=$(id -g) docker compose run --rm jasna \
+  --input /input/video.mp4 \
+  --output /output/out.mkv \
+  --encoder-settings cq=20,preset=P6
+
+# 平衡推荐
+--encoder-settings cq=22,preset=P6
+
+# 限制码率
+--encoder-settings cq=22,preset=P6,maxbitrate=30000
+```
+
+`maxbitrate` 单位 kbps。1080p 建议 `maxbitrate=20000`（~20 Mbps）。
+
 ## 画质调优
 
 ### 恢复区域有明显边界
