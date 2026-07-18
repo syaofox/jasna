@@ -16,6 +16,10 @@ venv/
 # Env
 .env
 
+# Input/output (volume-mounted in docker-compose)
+input/
+output/
+
 # Model weights (large, should be volume-mounted)
 model_weights/
 
